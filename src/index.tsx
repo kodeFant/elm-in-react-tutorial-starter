@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 
 export default function App() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = React.useState(0);
   return (
     <div>
       <h1>Elm In React</h1>
