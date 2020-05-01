@@ -19,22 +19,35 @@ interface ComponentProps {
 }
 
 function ElmComponent({ count, setCount }: ComponentProps) {
+  const [app, setApp] = React.useState<Elm.Main.App | undefined>();
   const elmRef = React.useRef(null);
+
+  const elmApp = () => Elm.Main.init({ node: elmRef.current, flags: count });
+
   React.useEffect(() => {
-    Elm.Main.init({ node: elmRef.current, flags: null });
+    setApp(elmApp());
   }, []);
+
+  // Subscribes to state changes from Elm
+  React.useEffect(() => {
+    app &&
+      app.ports.updateCountInReact.subscribe((newCount) => {
+        setCount(newCount);
+      });
+  }, [app]);
+
   return <div ref={elmRef}></div>;
 }
 
-function ReactComponent({ count, setCount }: ComponentProps) {
-  const increment = () => setCount(count + 1);
-  const decrement = () => setCount(count - 1);
+function ReactComponent({ count }: ComponentProps) {
+  // const increment = () => setCount(count + 1);
+  // const decrement = () => setCount(count - 1);
   return (
     <div>
       <h2>This is a React Component</h2>
       <div>Count: {count}</div>
-      <button onClick={increment}>+</button>
-      <button onClick={decrement}>-</button>
+      {/* <button onClick={increment}>+</button>
+      <button onClick={decrement}>-</button> */}
     </div>
   );
 }
